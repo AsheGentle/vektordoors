@@ -345,7 +345,7 @@ html {
     right: 35px;
 }
 .popup-window .popup-window-close-icon:after {
-    background-image: url('../images/form.close.png');
+    background-image: url('images/form.close.png');
     width: 20px;
     height: 20px;
 }
