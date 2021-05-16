@@ -1,5 +1,4 @@
-$(function(){
-
+$(document).on('ready', function(){
     $(window).scroll(function(){
         if ($(this).scrollTop() > 800) {
             $('.button_top').fadeIn();
@@ -12,27 +11,6 @@ $(function(){
         $('body, html').animate({
             scrollTop: 0
         }, 600);
-    });
-
-    $(".tab-auth").on("click", function(){
-        $(".system-auth-form-body__tab.active").removeClass("active");
-        $(".system-auth-form-body__tab[data-tab='tab-auth']").addClass("active");
-
-        /*universe.components.get(
-         {'component': 'bitrix:system.auth.authorize', 'template': 'template.1', 'parameters': {'AUTH_URL': '', 'BACKURL': '/?component=bitrix%3Asystem.auth.form&amp;template=template.1&amp;parameters%5BCOMPONENT_TEMPLATE%5D=template.1&amp;parameters%5BREGISTER_URL%5D=&amp;parameters%5BFORGOT_PASSWORD_URL%5D=&amp;parameters%5BPROFILE_URL%5D=&amp;parameters%5BSHOW_ERRORS%5D=N&amp;page%5Bpage%5D=components.get&amp;page%5Brequest%5D=y', 'AUTH_REGISTER_URL': '/?component=bitrix%3Asystem.auth.form&amp;template=template.1&amp;parameters%5BCOMPONENT_TEMPLATE%5D=template.1&amp;parameters%5BREGISTER_URL%5D=&amp;parameters%5BFORGOT_PASSWORD_URL%5D=&amp;parameters%5BPROFILE_URL%5D=&amp;parameters%5BSHOW_ERRORS%5D=N&amp;page%5Bpage%5D=components.get&amp;page%5Brequest%5D=y', 'AUTH_FORGOT_PASSWORD_URL': '/?component=bitrix%3Asystem.auth.form&amp;template=template.1&amp;parameters%5BCOMPONENT_TEMPLATE%5D=template.1&amp;parameters%5BREGISTER_URL%5D=&amp;parameters%5BFORGOT_PASSWORD_URL%5D=&amp;parameters%5BPROFILE_URL%5D=&amp;parameters%5BSHOW_ERRORS%5D=N&amp;page%5Bpage%5D=components.get&amp;page%5Brequest%5D=y', 'AJAX_MODE': 'N', 'AJAX_OPTION_ADDITIONAL': 'bx_2365939772__auth_form', 'AUTH_RESULT': ''}},
-         function(popup){
-         $('#bx_2365939772_ .system-auth-form-body').html(popup);
-         })*/
-    });
-
-    $(".tab-reg").on("click", function(){
-        $(".system-auth-form-body__tab.active").removeClass("active");
-        $(".system-auth-form-body__tab[data-tab='tab-reg']").addClass("active");
-        /*universe.components.get(
-         {'component': 'bitrix:main.register', 'template': 'template.1', 'parameters': {'SHOW_FIELDS': ['EMAIL', 'NAME', 'PERSONAL_PHONE'], 'REQUIRED_FIELDS': ['EMAIL', 'NAME'], 'AUTH': 'Y', 'USE_BACKURL': 'Y', 'SUCCESS_PAGE': '', 'SET_TITLE': 'N', 'USER_PROPERTY': [], 'USER_PROPERTY_NAME': '', 'COMPONENT_TEMPLATE': 'template.1', 'AJAX_MODE': 'Y', 'AJAX_OPTION_ADDITIONAL': 'bx_2365939772__register_form'}},
-         function(popup){
-         $('#bx_2365939772_ .system-auth-form-body').html(popup);
-         })*/
     });
 
     var scrollWidth = getScrollbarWidth();
@@ -70,6 +48,7 @@ $(function(){
         }
     });
 
+
     // sertificat gallery
     $('.intec-certificates_list').lightGallery({
         selector: '.intec-certificates_wrap',
@@ -77,501 +56,9 @@ $(function(){
         share: false
     });
 
-    // mobile menu start
-    var root = $('#c-menu');
-    var menu = $('[data-role="menu"]', root);
-    var page = $('html');
-    var buttons = {};
-    var state = false;
 
-    menu.items = $('[data-role="item"]', root);
-    buttons.open = $('[data-action="menu.open"]', root);
-    buttons.close = $('[data-action="menu.close"]', root);
-
-    menu.open = function(){
-        if (state)
-            return;
-
-        state = true;
-        menu.css({
-            'display': 'block'
-        }).stop().animate({
-            'opacity': 1
-        }, 500);
-
-        page.css({
-            'overflow': 'hidden',
-            'height': '100%'
-        });
-    };
-
-    menu.close = function(){
-        if (!state)
-            return;
-
-        state = false;
-        menu.stop().animate({
-            'opacity': 0
-        }, 500, function(){
-            menu.css({
-                'display': 'none'
-            });
-
-            page.css({
-                'overflow': '',
-                'height': ''
-            });
-        });
-    };
-
-    buttons.open.on('click', menu.open);
-    buttons.close.on('click', menu.close);
-
-    menu.items.each(function(){
-        var item = $(this);
-        var parent = item.parents('[data-role="item"]').first();
-        var items = $('[data-role="items"]', item).first();
-        var buttons = {};
-        var state = false;
-
-        parent.items = $('[data-role="items"]', parent).first();
-
-        if (items.size() === 0)
-            return;
-
-        buttons.open = $('[data-action="menu.item.open"]', item).first();
-        buttons.close = $('[data-action="menu.item.close"]', items).first();
-
-        item.open = function(){
-            if (state)
-                return;
-
-            state = true;
-            menu.items.attr('data-current', 'false');
-            item.attr('data-expanded', 'true');
-            item.attr('data-current', 'true');
-            parent.items.scrollTop(0);
-        };
-
-        item.close = function(){
-            if (!state)
-                return;
-
-            state = false;
-            menu.items.attr('data-current', 'false');
-            item.attr('data-expanded', 'false');
-            parent.attr('data-current', 'true');
-        };
-
-        buttons.open.on('click', item.open);
-        buttons.close.on('click', item.close);
-    });
-    // mobile menu end
-
-
-    // right panel start
-    var root = $('#c-sale-basket-small');
-    var switches = $('[data-role="switches"]', root);
-    var products = $('[data-role="product"]', root);
-    var buttons = $('[data-role="button"]', root);
-    var overlay;
-    var tabs;
-
-    overlay = (function(){
-        var overlay = $('[data-role="overlay"]', root);
-        var state = false;
-
-        overlay.open = function(animate){
-            if (state)
-                return;
-
-            state = true;
-
-            if (animate) {
-                overlay.css({
-                    'width': '100%',
-                    'height': '100%',
-                    'opacity': '1'
-                }).stop().animate({
-                    'opacity': 1
-                }, 500, function(){});
-            } else {
-                overlay.css({
-                    'width': '100%',
-                    'height': '100%',
-                    'opacity': 1
-                });
-            }
-        };
-
-        overlay.close = function(animate){
-            if (!state)
-                return;
-
-            state = false;
-
-            if (animate) {
-                overlay.css('opacity', 0).stop().animate({
-                    'opacity': 0
-                }, 500, function(){
-                    overlay.css({
-                        'width': '',
-                        'height': '',
-                        'opacity': ''
-                    });
-                });
-            } else {
-                overlay.css({
-                    'opacity': '',
-                    'width': '',
-                    'height': ''
-                });
-            }
-        };
-
-        return overlay;
-    })();
-
-    tabs = (function(){
-        var tabs = $('[data-role="tabs"]', root);
-        var list = $('[data-tab]', tabs);
-        var current = null;
-
-        tabs.open = function(code, animate){
-            var tab;
-            var width = {};
-
-            tab = list.filter('[data-tab="' + code + '"]');
-
-            if (tab.length !== 1)
-                return false;
-
-            tabs.trigger('open', [tab]);
-
-            width.current = tabs.width();
-            current = code;
-
-            list.css({
-                'display': '',
-                'width': ''
-            }).attr('data-active', 'false');
-
-            tab.css('display', 'block').attr('data-active', 'true');
-            width.new = tab.width();
-
-            if (animate) {
-                tab.css('width', width.current).stop().animate({
-                    'width': width.new
-                }, 500, function(){
-                    tab.css('width', '');
-                });
-            } else {
-                tab.css('width', '');
-            }
-
-            return true;
-        };
-
-        tabs.close = function(animate){
-            var tab;
-
-            if (current === null)
-                return;
-
-            tab = list.filter('[data-tab="' + current + '"]');
-            current = null;
-
-            if (tab.length !== 1)
-                return;
-
-            tabs.trigger('close', [tab]);
-
-            if (animate) {
-                tab.stop().animate({
-                    'width': 0
-                }, 500, function(){
-                    list.attr('data-active', 'false');
-                    tab.css({
-                        'width': '',
-                        'display': ''
-                    });
-                });
-            } else {
-                list.attr('data-active', 'false');
-                tab.css('display', '');
-            }
-        };
-
-        tabs.switch = function(code, animate){
-            if (code === current) {
-                tabs.close(animate);
-                overlay.close(animate);
-
-                return false;
-            } else {
-                tabs.open(code, animate);
-                overlay.open(animate);
-
-                return true;
-            }
-        };
-
-        tabs.getCurrent = function(){
-            return current;
-        };
-
-        return tabs;
-    })();
-
-    switches.activate = function(item){
-        item = switches.children('[data-role="switch"]').filter(item);
-
-        if (item.length !== 1)
-            return;
-
-        item.attr('data-active', 'true');
-        item.addClass('active');
-    };
-
-    switches.deactivate = function(){
-        switches.children('[data-role="switch"]').attr('data-active', 'false');
-        switches.children('[data-role="switch"]').removeClass('active');
-    };
-
-    tabs.on('close', function(){
-        switches.deactivate();
-    });
-
-    switches.children('[data-role="switch"]').on('click', function(){
-        var self = $(this);
-        var tab = self.data('tab');
-
-        switches.deactivate();
-
-        if (tabs.switch(tab, true)) {
-            switches.activate(self);
-        }
-    });
-
-    overlay.on('click', function(){
-        tabs.close(true);
-        overlay.close(true);
-    });
-
-    buttons.on('click', function(){
-        var button = $(this);
-        var action = button.data('action');
-
-        if (action === 'basket.clear') {
-            universe.basket.clear({
-                'basket': 'Y'
-            });
-        } else if (action === 'delayed.clear') {
-            universe.basket.clear({
-                'delay': 'Y'
-            });
-        } else if (action === 'close') {
-            tabs.close(true);
-            overlay.close(true);
-        } else if (action === 'form') {
-            if ($(document).width() < 721) {
-                $("[data-modal='#callback']").trigger("click");
-            }
-            /*universe.forms.show({
-             'id': 1,
-             'template': 'template.1',
-             'parameters': {
-             'AJAX_OPTION_ADDITIONAL': 'i-1-intec-universe-sale-basket-small-template-2-gnX3eXOTCmq9-FORM-POPUP',
-             'CONSENT_URL': '/company/consent/'
-             },
-             'settings': {
-             'title': 'Заказать звонок'
-             }
-             });*/
-        } else if (action === 'personal') {
-            /*universe.components.show({
-             'component': 'bitrix:system.auth.form',
-             'template': 'template.1',
-             'parameters': {
-             'COMPONENT_TEMPLATE': 'template.1',
-             'REGISTER_URL': '',
-             'FORGOT_PASSWORD_URL': '',
-             'PROFILE_URL': '',
-             'SHOW_ERRORS': 'N'
-             }
-             });*/
-        }
-    });
-
-    /*universe.forms.get({
-     'id': 1,
-     'template': 'template.1',
-     'parameters': {
-     'AJAX_OPTION_ADDITIONAL': 'i-1-intec-universe-sale-basket-small-template-2-gnX3eXOTCmq9-FORM',
-     'CONSENT_URL': '/company/consent/'
-     }
-     }, function(response){
-     tabs.find('[data-role="area"][data-area="form"]').html(response);
-     });
-     
-     universe.components.get({
-     'component': 'bitrix:system.auth.form',
-     'template': 'template.1',
-     'parameters': {
-     'COMPONENT_TEMPLATE': 'template.1',
-     'REGISTER_URL': '',
-     'FORGOT_PASSWORD_URL': '',
-     'PROFILE_URL': '',
-     'SHOW_ERRORS': 'N'
-     }
-     }, function(response){
-     tabs.find('[data-role="area"][data-area="personal"]').html(response);
-     });*/
-
-    $(function(){
-        var data;
-        var update;
-
-        data = {
-            'component': 'intec.universe:sale.basket.small',
-            'template': 'template.2',
-            'parameters': {
-                'FORM_ID': 1,
-                'SETTINGS_USE': 'Y',
-                'BASKET_SHOW': 'Y',
-                'DELAY_SHOW': 'Y',
-                'AUTO': 'N',
-                'ANIMATE': 'N',
-                'TAB': null,
-                'CATALOG_URL': '/catalog/',
-                'BASKET_URL': '/personal/basket/',
-                'ORDER_URL': '/personal/basket/?page=order',
-                'COMPARE_URL': '/catalog/compare.php',
-                'PERSONAL_URL': '/personal/profile/',
-                'REGISTER_URL': null,
-                'CONSENT_URL': '/company/consent/',
-                'PROFILE_URL': null,
-                'FORGOT_PASSWORD_URL': null,
-                'COMPARE_SHOW': 'Y',
-                'COMPARE_CODE': 'compare',
-                'COMPARE_IBLOCK_TYPE': 'catalogs',
-                'COMPARE_IBLOCK_ID': 16,
-                'FORM_TITLE': 'Заказать звонок',
-                'FORM_SHOW': 'Y',
-                'PERSONAL_SHOW': 'Y',
-                'SBERBANK_ICON_SHOW': 'Y',
-                'QIWI_ICON_SHOW': 'Y',
-                'YANDEX_MONEY_ICON_SHOW': 'Y',
-                'VISA_ICON_SHOW': 'Y',
-                'MASTERCARD_ICON_SHOW': 'Y',
-                'DELAYED_SHOW': 'Y',
-                'CACHE_TYPE': 'A',
-                '~SETTINGS_USE': 'Y',
-                '~COMPARE_SHOW': 'Y',
-                '~COMPARE_CODE': 'compare',
-                '~COMPARE_IBLOCK_TYPE': 'catalogs',
-                '~COMPARE_IBLOCK_ID': 16,
-                '~AUTO': 'Y',
-                '~FORM_ID': 1,
-                '~FORM_TITLE': 'Заказать звонок',
-                '~BASKET_SHOW': 'Y',
-                '~FORM_SHOW': 'Y',
-                '~PERSONAL_SHOW': 'Y',
-                '~SBERBANK_ICON_SHOW': 'Y',
-                '~QIWI_ICON_SHOW': 'Y',
-                '~YANDEX_MONEY_ICON_SHOW': 'Y',
-                '~VISA_ICON_SHOW': 'Y',
-                '~MASTERCARD_ICON_SHOW': 'Y',
-                '~DELAYED_SHOW': 'Y',
-                '~CATALOG_URL': '/catalog/',
-                '~BASKET_URL': '/personal/basket/',
-                '~ORDER_URL': '/personal/basket/?page=order',
-                '~COMPARE_URL': '/catalog/compare.php',
-                '~PERSONAL_URL': '/personal/profile/',
-                '~CONSENT_URL': '/company/consent/',
-                '~CACHE_TYPE': 'A',
-                'AJAX_MODE': 'N'
-            }
-        };
-
-        update = function(tab, animate){
-            if (update.disabled)
-                return;
-
-            update.disabled = true;
-
-            if (tab === true || !api.isDeclared(tab)) {
-                tab = tabs.getCurrent();
-            } else if (tab === false) {
-                tab = null;
-            }
-
-            data.parameters['TAB'] = tab;
-            data.parameters['ANIMATE'] = animate ? 'Y' : 'N';
-
-            universe.components.get(data, function(result){
-                root.replaceWith(result);
-            });
-        };
-
-        update.disabled = false;
-        universe.basket.once('update', function(){
-            update();
-        });
-        universe.compare.once('update', function(){
-            update();
-        });
-
-        products.each(function(){
-            var product = $(this);
-            var id = product.data('id');
-            var counter = $('[data-role="counter"]', product);
-            var buttons = $('[data-role="button"]', product);
-
-            counter.control('numeric', {}, function(configuration, instance){
-                var timeout;
-
-                if (instance !== null) {
-                    instance.on('change', function(event, value){
-                        clearTimeout(timeout);
-                        timeout = setTimeout(function(){
-                            universe.basket.setQuantity({
-                                'id': id,
-                                'quantity': value
-                            });
-                        }, 500);
-                    });
-                }
-            });
-
-            buttons.on('click', function(){
-                var button = $(this);
-                var action = button.data('action');
-                var data = {
-                    'id': id
-                };
-
-                if (action === 'product.add') {
-                    data.delay = 'N';
-                    universe.basket.add(data);
-                } else if (action === 'product.delay') {
-                    data.delay = 'Y';
-                    universe.basket.add(data);
-                } else if (action === 'product.remove') {
-                    universe.basket.remove(data);
-                }
-            });
-        });
-
-    });
-    // right panel end
-
-});
-
-
-
-(function($, api){
-    var root = $('#i-0-intec-startshop-forms-result-new-template-1-l9Hc2Cj4VP28');
+    // form-verification start
+    var root = $('.form-inputs-verification');
 
     var inputs = $('[data-role="input"]', root);
     var update;
@@ -595,11 +82,479 @@ $(function(){
     inputs.on('change', function(){
         update.call(this);
     });
-})(jQuery, intec);
-
-$(function(){
-    $('.system-auth-form-tabs-panel-item').click(function(){
-        $('.system-auth-form-tabs-panel-item').removeClass('active');
-        $(this).addClass('active');
-    });
+    // form-verification end
 });
+
+$(document).on('ready', function(){
+    // search start
+    var root = $('#search-title-popup');
+    var search = $('[data-role="search"]', root);
+    var overlay = $('[data-role="overlay"]', search);
+    var panel = $('[data-role="panel"]', search);
+    var input = $('[data-role="input"]', search);
+    var page = $('html');
+    var buttons = {};
+    var state = false;
+
+    buttons.open = $('[data-action="search.open"]', root);
+    buttons.close = $('[data-action="search.close"]', root);
+
+    search.open = function(){
+        if (state)
+            return;
+
+        state = true;
+        search.attr('data-expanded', 'true').css({
+            'display': 'block'
+        });
+
+        page.css({
+            'overflow': 'hidden',
+            'height': '100%'
+        });
+
+        panel.stop().animate({
+            'top': 0
+        }, 350);
+        overlay.stop().animate({
+            'opacity': 0.5
+        }, 350);
+
+        input.focus();
+    };
+
+    search.close = function(){
+        if (!state)
+            return;
+
+        state = false;
+        search.attr('data-expanded', 'false');
+
+        panel.stop().animate({
+            'top': -panel.height()
+        }, 350);
+        overlay.stop().animate({
+            'opacity': 0
+        }, 350, function(){
+            search.css({
+                'display': 'none'
+            });
+            input.blur();
+
+            page.css({
+                'overflow': '',
+                'height': ''
+            });
+        });
+    };
+
+    buttons.open.on('click', search.open);
+    buttons.close.on('click', search.close);
+
+    BX.ready(function(){
+        var control = new JCTitleSearch({
+            'AJAX_PAGE': '/',
+            'CONTAINER_ID': 'search-title-popup',
+            'INPUT_ID': '-desktop-popup-1',
+            'MIN_QUERY_LEN': 2
+        });
+
+        control.ShowResult = (function(){
+            var handler = control.ShowResult;
+
+            return function(){
+                if (state)
+                    handler.apply(control, arguments);
+            }
+        })();
+    });
+    // search end
+});
+
+$(document).on('ready', function(){
+    // search fixed start
+    var root = $('#i-9-bitrix-search-title-popup');
+    var search = $('[data-role="search"]', root);
+    var overlay = $('[data-role="overlay"]', search);
+    var panel = $('[data-role="panel"]', search);
+    var input = $('[data-role="input"]', search);
+    var page = $('html');
+    var buttons = {};
+    var state = false;
+
+    buttons.open = $('[data-action="search.open"]', root);
+    buttons.close = $('[data-action="search.close"]', root);
+
+    search.open = function(){
+        if (state)
+            return;
+
+        state = true;
+        search.attr('data-expanded', 'true').css({
+            'display': 'block'
+        });
+
+        page.css({
+            'overflow': 'hidden',
+            'height': '100%'
+        });
+
+        panel.stop().animate({
+            'top': 0
+        }, 350);
+        overlay.stop().animate({
+            'opacity': 0.5
+        }, 350);
+
+        input.focus();
+    };
+
+    search.close = function(){
+        if (!state)
+            return;
+
+        state = false;
+        search.attr('data-expanded', 'false');
+
+        panel.stop().animate({
+            'top': -panel.height()
+        }, 350);
+        overlay.stop().animate({
+            'opacity': 0
+        }, 350, function(){
+            search.css({
+                'display': 'none'
+            });
+            input.blur();
+
+            page.css({
+                'overflow': '',
+                'height': ''
+            });
+        });
+    };
+
+    buttons.open.on('click', search.open);
+    buttons.close.on('click', search.close);
+
+    BX.ready(function(){
+        var control = new JCTitleSearch({
+            'AJAX_PAGE': '/',
+            'CONTAINER_ID': 'i-9-bitrix-search-title-popup',
+            'INPUT_ID': '-fixed-popup-1',
+            'MIN_QUERY_LEN': 2
+        });
+
+        control.ShowResult = (function(){
+            var handler = control.ShowResult;
+
+            return function(){
+                if (state)
+                    handler.apply(control, arguments);
+            }
+        })();
+    });
+    //search fixed end
+});
+
+$(document).on('ready', function(){
+    // header basket start
+    var root = $('#i-2-intec-universe-sale-basket-small-notifications-1-l2XUFDqJSIDF');
+    var container = $('[data-role="container"]', root);
+
+    $(function(){
+        var data;
+        var add;
+
+        data = {
+            'component': 'intec.universe:sale.basket.small',
+            'template': 'notifications.1',
+            'parameters': {
+                'BASKET_URL': '/personal/basket/',
+                'CACHE_TYPE': 'A',
+                '~BASKET_URL': '/personal/basket/',
+                '~CACHE_TYPE': 'A',
+                'AJAX_MODE': 'N'
+            }
+        };
+
+        add = function(id){
+            data.parameters['ID'] = id;
+
+            universe.components.get(data, function(result){
+                var item = $(result);
+                var element;
+
+                container.append(item);
+
+                element = $('[data-product-id="' + id + '"]', container);
+
+                element.attr('data-active', 'true');
+                element.find('[data-role="close"]').on('click', function(){
+                    element.attr('data-active', 'false');
+
+                    setTimeout(function(){
+                        item.remove();
+                    }, 300);
+                });
+
+                setTimeout(function(){
+                    element.attr('data-active', 'false');
+
+                    setTimeout(function(){
+                        item.remove();
+                    }, 300);
+
+                }, 5000);
+            });
+        };
+
+        universe.basket.on('add', function(event, data){
+            if (data.delay !== 'Y')
+                add(data.id);
+        });
+    });
+    // header basket end
+});
+
+
+(function($, api){
+    var handler;
+
+    handler = function(){
+        var root = $('#i-6-bitrix-system-auth-form-panel');
+        var buttons;
+        var modal;
+        var window;
+        var data;
+
+        data = {
+            'id': 'i-6-bitrix-system-auth-form-panel-modal',
+            'title': 'Авторизация'
+        };
+
+        modal = $('[data-role="modal"]', root);
+        modal.open = function(){
+            window.setContent(modal.clone().get(0));
+            window.show();
+        };
+
+        window = new BX.PopupWindow(data.id, null, {
+            'content': null,
+            'title': data.title,
+            'closeIcon': {
+                'right': '20px',
+                'top': '22px'
+            },
+            'zIndex': 0,
+            'offsetLeft': 0,
+            'offsetTop': 0,
+            'width': 800,
+            'overlay': true,
+            'titleBar': {
+                'content': BX.create('span', {
+                    'html': data.title,
+                    'props': {
+                        'className': 'access-title-bar'
+                    }
+                })
+            }
+        });
+
+        buttons = {};
+        buttons.login = $('[data-action="login"]', root);
+        buttons.login.on('click', modal.open);
+    };
+
+    $(document).on('ready', handler);
+    BX.addCustomEvent('onFrameDataReceived', handler);
+
+    $('.bx-auth-serv .bx-auth-service-form input[type=submit]').addClass('intec-ui intec-ui-control-button intec-ui-mod-round-3 intec-ui-size-2 intec-ui-scheme-current');
+})(jQuery);
+
+(function($, api){
+    (function($, api){
+        var handler;
+
+        handler = function(){
+            var root = $('#i-10-bitrix-system-auth-form-icons');
+            var buttons;
+            var modal;
+
+            modal = $('[data-role="modal"]', root);
+            modal.open = function(){
+                var window;
+                var data;
+
+                data = {
+                    'id': 'i-10-bitrix-system-auth-form-icons-modal',
+                    'title': 'Авторизация'
+                };
+
+                window = new BX.PopupWindow(data.id, null, {
+                    'content': modal.clone().get(0),
+                    'title': data.title,
+                    'closeIcon': {
+                        'right': '20px',
+                        'top': '22px'
+                    },
+                    'zIndex': 0,
+                    'offsetLeft': 0,
+                    'offsetTop': 0,
+                    'width': 800,
+                    'overlay': true,
+                    'titleBar': {
+                        'content': BX.create('span', {
+                            'html': data.title,
+                            'props': {
+                                'className': 'access-title-bar'
+                            }
+                        })
+                    }
+                });
+
+                window.show();
+            };
+
+            buttons = {};
+            buttons.login = $('[data-action="login"]', root);
+            buttons.login.on('click', modal.open);
+        };
+
+        $(document).on('ready', handler);
+
+        BX.addCustomEvent("onFrameDataReceived", handler);
+    })(jQuery);
+})(jQuery);
+
+(function($, api){
+    $(document).on('ready', function(){
+        var root = $('#i-3-intec-universe-main-header-template');
+        var view = $('.widget-view.widget-view-fixed', root);
+        var menu = $('.widget-menu .ns-bitrix.c-menu.c-menu-horizontal-1', view);
+
+        view.on('show', function(){
+            menu.trigger('update');
+        });
+    });
+})(jQuery);
+
+(function($, api){
+    $(document).on('ready', function(){
+        var root = $('#i-3-intec-universe-main-header-template');
+        var state = false;
+        var area = $(window);
+        var views;
+        var update;
+
+        update = function(){
+            var bound = 0;
+
+            if (views.desktop.is(':visible')) {
+                bound += views.desktop.height();
+                bound += views.desktop.offset().top;
+            }
+
+            if (area.scrollTop() > bound) {
+                views.fixed.show();
+            } else {
+                views.fixed.hide();
+            }
+        };
+
+        views = {};
+        views.desktop = $('.widget-view.widget-view-desktop', root);
+        views.fixed = $('.widget-view.widget-view-fixed', root);
+        views.fixed.css({
+            'top': -views.fixed.height()
+        });
+
+        views.fixed.show = function(){
+            var view = views.fixed;
+
+            if (state)
+                return;
+
+            state = true;
+            view.css({
+                'display': 'block'
+            });
+
+            view.trigger('show');
+            view.stop().animate({
+                'top': 0
+            }, 500)
+        };
+
+        views.fixed.hide = function(){
+            var view = views.fixed;
+
+            if (!state)
+                return;
+
+            state = false;
+            view.stop().animate({
+                'top': -view.height()
+            }, 500, function(){
+                view.trigger('hide');
+                view.css({
+                    'display': 'none'
+                })
+            })
+        };
+
+        update();
+
+        area.on('scroll', update)
+                .on('resize', update);
+    });
+})(jQuery);
+
+(function($, api){
+    $(document).on('ready', function(){
+        var root = $('#i-3-intec-universe-main-header-template');
+        var area = $(window);
+        var view;
+        var update;
+        var stub = null;
+
+        view = $('.widget-view.widget-view-mobile', root);
+        update = function(){
+            var bound = 0;
+
+            view.removeClass('widget-view-mobile-fixed');
+
+            if (view.is(':visible')) {
+                bound += view.offset().top;
+
+                if (area.scrollTop() > bound) {
+                    if (stub === null) {
+                        stub = $('<div></div>');
+                        view.after(stub);
+                    }
+
+                    stub.css({
+                        'height': view.height()
+                    });
+
+                    view.addClass('widget-view-mobile-fixed');
+                } else {
+                    if (stub !== null) {
+                        stub.remove();
+                        stub = null;
+                    }
+                }
+            } else {
+                if (stub !== null) {
+                    stub.remove();
+                    stub = null;
+                }
+            }
+        };
+
+        update();
+
+        area.on('scroll', update)
+                .on('resize', update);
+    });
+})(jQuery);
