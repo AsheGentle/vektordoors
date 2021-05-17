@@ -49,11 +49,26 @@ $(document).on('ready', function(){
     });
 
 
-    // sertificat gallery
+    // sertificate gallery
     $('.intec-certificates_list').lightGallery({
         selector: '.intec-certificates_wrap',
         autoplay: false,
         share: false
+    });
+
+
+    // about gallery
+    $('.intec-gallery').lightGallery({
+        selector: '.intec-gallery_item',
+        autoplay: false,
+        share: false
+    });
+
+
+    // photo gallery
+    $('.photo-section-wrapper').lightGallery({
+        animateThumb: false,
+        thumbnail: true
     });
 
 
@@ -83,6 +98,13 @@ $(document).on('ready', function(){
         update.call(this);
     });
     // form-verification end
+
+
+    // orders list
+    $(".order-list-default-item-header").click(function(){
+        $(this).next().slideToggle();
+        $(this).parent().toggleClass("order-list-default-item-active");
+    });
 });
 
 $(document).on('ready', function(){
@@ -259,7 +281,7 @@ $(document).on('ready', function(){
 
 $(document).on('ready', function(){
     // header basket start
-    var root = $('#i-2-intec-universe-sale-basket-small-notifications-1-l2XUFDqJSIDF');
+    var root = $('#i-2-intec-universe-sale-basket-small-notifications');
     var container = $('[data-role="container"]', root);
 
     $(function(){
@@ -558,3 +580,187 @@ $(document).on('ready', function(){
                 .on('resize', update);
     });
 })(jQuery);
+
+
+(function($){
+    $(document).ready(function(){
+        var root;
+
+        root = $('#c-breadcrumb');
+        root.find('[data-control="item"]').each(function(){
+            var item;
+            var link;
+            var menu;
+
+            item = $(this);
+            link = item.find('[data-control="link"]');
+            menu = item.find('[data-control="menu"]');
+
+            item.on('mouseover', function(){
+                link.addClass('intec-cl-text');
+                menu.css({
+                    'display': 'block'
+                }).stop().animate({
+                    'opacity': 1
+                }, 300);
+            }).on('mouseout', function(){
+                link.removeClass('intec-cl-text');
+                menu.stop().animate({
+                    'opacity': 0
+                }, 300, function(){
+                    menu.css({
+                        'display': 'none'
+                    });
+                });
+            });
+        });
+    });
+})(jQuery);
+
+
+// basket start
+(function(jQuery, api){
+    var data;
+    var run;
+    var update;
+
+    data = {};
+    data.basket = [];
+    data.compare = [];
+
+    run = function(){
+        $('[data-basket-id]').attr('data-basket-state', 'none');
+        $('[data-compare-id]').attr('data-compare-state', 'none');
+
+        api.each(data.basket, function(index, item){
+            $('[data-basket-id=' + item.id + ']').attr('data-basket-state', item.delay ? 'delayed' : 'added');
+        });
+
+        api.each(data.compare, function(index, item){
+            $('[data-compare-id=' + item.id + ']').attr('data-compare-state', 'added');
+        });
+    };
+
+    update = function(){
+        $.ajax('/bitrix/templates/universelite_s1/components/intec.universe/system/basket.manager/ajax.php', {
+            'type': 'POST',
+            'cache': false,
+            'dataType': 'json',
+            'data': {
+                'BASKET': 'Y',
+                'COMPARE': 'Y',
+                'COMPARE_CODE': 'compare',
+                'COMPARE_NAME': 'compare',
+                'CACHE_TYPE': 'N',
+                '~BASKET': 'Y',
+                '~COMPARE': 'Y',
+                '~COMPARE_NAME': 'compare',
+                '~CACHE_TYPE': 'N'
+            },
+            'success': function(response){
+                data = response;
+                run();
+            }
+        })
+    };
+
+    update();
+
+    $(document).on('click', '[data-basket-id][data-basket-action]', function(){
+        var node = $(this);
+        var id = node.data('basketId');
+        var action = node.data('basketAction');
+        var quantity = node.data('basketQuantity');
+        var price = node.data('basketPrice');
+        var data = node.data('basketData');
+
+        if (id == null)
+            return;
+
+        if (action === 'add') {
+            $('[data-basket-id=' + id + ']').attr('data-basket-state', 'processing');
+            universe.basket.add(api.extend({
+                'quantity': quantity,
+                'price': price
+            }, data, {
+                'id': id
+            }));
+        } else if (action === 'remove') {
+            $('[data-basket-id=' + id + ']').attr('data-basket-state', 'processing');
+            universe.basket.remove(api.extend({}, data, {
+                'id': id
+            }));
+        } else if (action === 'delay') {
+            $('[data-basket-id=' + id + ']').attr('data-basket-state', 'processing');
+            universe.basket.add(api.extend({
+                'quantity': quantity,
+                'price': price
+            }, data, {
+                'id': id,
+                'delay': 'Y'
+            }));
+        }
+    });
+
+    $(document).on('click', '[data-compare-id][data-compare-action]', function(){
+        var node = $(this);
+        var id = node.data('compareId');
+        var action = node.data('compareAction');
+        var code = node.data('compareCode');
+        var iblock = node.data('compareIblock');
+        var data = node.attr('compareData');
+
+        if (id == null)
+            return;
+
+        if (action === 'add') {
+            $('[data-compare-id=' + id + ']').attr('data-compare-state', 'processing');
+            universe.compare.add(api.extend({}, data, {
+                'id': id,
+                'code': code,
+                'iblock': iblock
+            }));
+        } else if (action === 'remove') {
+            $('[data-compare-id=' + id + ']').attr('data-compare-state', 'processing');
+            universe.compare.remove(api.extend({}, data, {
+                'id': id,
+                'code': code,
+                'iblock': iblock
+            }));
+        }
+    });
+
+    universe.basket.on('update', update);
+    universe.compare.on('update', update);
+
+    BX.addCustomEvent('onFrameDataReceived', update);
+    BX.ready(update);
+})($, intec);
+// basket end
+
+
+// menuleft start
+(function($, api){
+    var root = $('#i-12-bitrix-menu-vertical');
+    var items = root.find('[data-role=item]');
+
+    items.each(function(){
+        var item = $(this);
+        var menu = item.find('[data-role=menu]').first();
+
+        if (menu.length > 0) {
+            item.on('mouseover', function(){
+                menu.show().stop().animate({
+                    'opacity': 1
+                }, 300);
+            }).on('mouseout', function(){
+                menu.stop().animate({
+                    'opacity': 0
+                }, 300, function(){
+                    menu.hide();
+                });
+            });
+        }
+    });
+})(jQuery);
+// menuleft end
