@@ -38,7 +38,7 @@
 
         window.offers = root.offers;
 
-        console.log(window.offers);
+        //console.log(window.offers);
 
         root.gallery = $('[data-role="gallery"]', root);
         root.gallery.pictures = $('[data-role="gallery.pictures"]', root.gallery);
@@ -287,70 +287,4 @@
                         .on('resize', update);
             })();
     });
-})(jQuery, intec);
-
-(function($, api){
-    var root = $('#i-13-bitrix-iblock-vote-template');
-    var id = root.data('id');
-    var voted = false;
-    var container = $('[data-role="container"]', root);
-    var votes = $('[data-role="container.vote"]', container);
-
-    root.update = function(rating){
-        votes.each(function(){
-            var vote = $(this);
-            var active = vote.data('active');
-            if (!active) {
-                if (vote.index() < rating) {
-                    vote.attr('data-focus', true);
-                } else {
-                    vote.attr('data-focus', false);
-                }
-            }
-        })
-    };
-
-    votes.each(function(){
-        var vote = $(this);
-        var rating = vote.index() + 1;
-        var active = vote.data('active');
-        var value = vote.data('value');
-        var arParams = {
-            'SESSION_PARAMS': '3fdb315167f624649b37142482c250b4',
-            'PAGE_PARAMS': {
-                'ELEMENT_ID': 781
-            },
-            'sessid': '6617eab5f65c8e644f7064ca42eea9d0',
-            'AJAX_CALL': 'Y'
-        };
-
-        if (!voted) {
-            vote.on('click', function(){
-
-                arParams['vote'] = 'Y';
-                arParams['vote_id'] = id;
-                arParams['rating'] = value;
-
-                $.post(
-                        '/bitrix/components/bitrix/iblock.vote/component.php',
-                        arParams,
-                        function(data){
-                            root.html(data);
-                        }
-                );
-            });
-
-            if (!active) {
-                vote.on('mouseover', function(){
-                    root.update(rating);
-                });
-                vote.on('mouseout', function(){
-                    root.update(0);
-                });
-            }
-        }
-    });
-
-    root.update(5);
-
 })(jQuery, intec);
